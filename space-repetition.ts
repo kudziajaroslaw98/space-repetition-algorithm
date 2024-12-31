@@ -64,27 +64,25 @@ export default function spaceRepetitionAlgorithm<
     return;
   }
 
-  const reversedWeights: WeightedItem<T>[] = mappedItems.map((item) => {
-    return {
-      ...item,
-      weight: max! - item.weight,
-    };
-  });
+  const reversedWeights: WeightedItem<T>[] = mappedItems.map((item, index) => {
+    const newWeight = max! - item.weight;
 
-  reversedWeights.map((item: WeightedItem<T>, index: number) => {
     if (index === 0) {
-      culmulativeWeights.push(item.weight);
-      return;
+      culmulativeWeights.push(newWeight);
+    } else {
+      culmulativeWeights.push(culmulativeWeights[index - 1] + newWeight);
     }
 
-    culmulativeWeights.push(culmulativeWeights[index - 1] + item.weight);
-    return;
+    return {
+      ...item,
+      weight: newWeight,
+    };
   });
 
   reversedWeights.sort((a, b) => b.weight - a.weight);
 
-  const summedSeconds = culmulativeWeights[culmulativeWeights.length - 1];
-  const randomNumber = getRandomRangedNumber(0, summedSeconds);
+  const summedMinutes = culmulativeWeights[culmulativeWeights.length - 1];
+  const randomNumber = getRandomRangedNumber(0, summedMinutes);
   const foundIndex = binarySearch(culmulativeWeights, randomNumber);
 
   if (debug) {
@@ -92,7 +90,7 @@ export default function spaceRepetitionAlgorithm<
       `[Spaced Repetition Algorithm] - Random Number: ${randomNumber}`
     );
     console.log(
-      `[Spaced Repetition Algorithm] - Summed Weights: ${summedSeconds}`
+      `[Spaced Repetition Algorithm] - Summed Weights: ${summedMinutes}`
     );
     console.log(`[Spaced Repetition Algorithm] - Min: ${min} - Max: ${max}`);
     console.log(
